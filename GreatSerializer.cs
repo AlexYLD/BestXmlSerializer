@@ -76,8 +76,11 @@ namespace TA.Pahit.Helpers
                 }
 
                 foreach (var subItem in collection) {
-                    if (IsSimple(subItem.GetType())) {
-                        AppendTabs(sb, tabLevel + 1);
+                    if (subItem is Type type) {
+                        AppendTabs(sb, tabLevel);
+                        sb.Append("<value>").Append(ReplaceIllegalCharacters(type.AssemblyQualifiedName)).Append("</value>\n");
+                    }else if (IsSimple(subItem.GetType())) {
+                        AppendTabs(sb, tabLevel);
                         sb.Append("<value>").Append(ReplaceIllegalCharacters(subItem.ToString())).Append("</value>\n");
                     }
                     else {
@@ -131,7 +134,7 @@ namespace TA.Pahit.Helpers
                 .Select(p => p.Key).ToList();
 
             sb.Append(">");
-            if (xmlElements.Count > 0) sb.Append("\n");
+            if (xmlElements.Any()) sb.Append("\n");
             if (xmlAttributes.Count == 0 && xmlElements.Count == 0) {
                 if (!subject.ToString().Equals(subject.GetType().ToString())) sb.Append(subject);
             }
